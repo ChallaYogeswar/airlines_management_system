@@ -1,0 +1,41 @@
+<div class="bookings-page">
+  <div class="eyebrow-line"></div>
+  <h1>My bookings.</h1>
+
+  @if (loading()) {
+    <p class="status-text">Loading…</p>
+  } @else if (bookings().length === 0) {
+    <p class="status-text">No bookings yet.</p>
+  } @else {
+    <div class="list">
+      @for (booking of bookings(); track booking.id) {
+        <div class="booking-row" [class.cancelled]="booking.status === 'CANCELLED'">
+          <div class="ref-col">
+            <div class="reference">{{ booking.bookingReference }}</div>
+            <div class="status-tag" [class]="booking.status.toLowerCase()">
+              {{ statusLabel(booking.status) }}
+            </div>
+          </div>
+          <div class="flight-col">
+            <div class="flight-number">{{ booking.flightNumber }}</div>
+            <div class="route">{{ booking.origin }} → {{ booking.destination }}</div>
+          </div>
+          <div class="time-col">{{ booking.departureTime | date: 'EEE, d MMM · shortTime' }}</div>
+          <div class="passengers-col">{{ booking.passengers.length }} passenger(s)</div>
+          <div class="price-col">₹{{ booking.totalPrice | number }}</div>
+          <div class="action-col">
+            @if (booking.status !== 'CANCELLED') {
+              <button
+                class="cancel-btn"
+                [disabled]="cancellingId() === booking.id"
+                (click)="cancel(booking)"
+              >
+                {{ cancellingId() === booking.id ? 'Cancelling…' : 'Cancel' }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

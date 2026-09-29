@@ -1,0 +1,109 @@
+.bookings-page {
+  padding: 64px 0 80px;
+}
+
+.eyebrow-line {
+  width: 36px;
+  height: 1px;
+  background: var(--brass);
+  margin-bottom: 22px;
+}
+
+h1 {
+  font-size: 38px;
+}
+
+.status-text {
+  color: var(--muted);
+  margin-top: 24px;
+}
+
+.list {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.booking-row {
+  background: var(--panel);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 110px 1.3fr 1fr 1fr 0.8fr auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.booking-row.cancelled {
+  opacity: 0.55;
+}
+
+.reference {
+  font-family: var(--font-data);
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.status-tag {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.status-tag.confirmed {
+  color: var(--green);
+}
+
+.status-tag.pending_payment {
+  color: var(--amber);
+}
+
+.status-tag.payment_failed {
+  color: var(--red);
+}
+
+.status-tag.cancelled {
+  color: var(--muted);
+}
+
+.flight-number {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.route {
+  font-family: var(--font-data);
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.time-col,
+.passengers-col {
+  font-family: var(--font-data);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.price-col {
+  font-family: var(--font-data);
+  font-size: 14px;
+}
+
+.cancel-btn {
+  padding: 8px 14px;
+  background: none;
+  border: 1px solid var(--red);
+  color: var(--red);
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

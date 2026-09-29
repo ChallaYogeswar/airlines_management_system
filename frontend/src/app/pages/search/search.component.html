@@ -1,0 +1,66 @@
+<div class="search-page">
+  <div class="eyebrow-line"></div>
+  <h1>Search flights.</h1>
+  <p class="lede">Enter a route and date — real inventory, real seat counts.</p>
+
+  <div class="panel">
+    <form [formGroup]="form" (ngSubmit)="search()">
+      <div class="panel-row">
+        <label class="field">
+          <span>From</span>
+          <input type="text" formControlName="origin" maxlength="3" placeholder="MAA" />
+        </label>
+        <label class="field">
+          <span>To</span>
+          <input type="text" formControlName="destination" maxlength="3" placeholder="HYD" />
+        </label>
+      </div>
+      <div class="panel-row">
+        <label class="field">
+          <span>Depart</span>
+          <input type="date" formControlName="date" />
+        </label>
+      </div>
+      <button type="submit" class="go-btn" [disabled]="form.invalid || loading()">
+        {{ loading() ? 'Searching…' : 'Search flights' }}
+      </button>
+    </form>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+
+  @if (searched() && !loading()) {
+    <div class="results">
+      @if (results().length === 0) {
+        <p class="empty">No flights found for that route and date — try a nearby date.</p>
+      } @else {
+        @for (offer of results(); track offer.id) {
+          <div class="result-row">
+            <div class="result-main">
+              <div class="flight-number">{{ offer.flightNumber }}</div>
+              <div class="route">{{ offer.origin }} → {{ offer.destination }}</div>
+            </div>
+            <div class="result-time">
+              <span>{{ offer.departureTime | date: 'shortTime' }}</span>
+              <span class="sep">—</span>
+              <span>{{ offer.arrivalTime | date: 'shortTime' }}</span>
+            </div>
+            <div class="result-seats" [class.low]="offer.seatsAvailable <= 3">
+              {{ offer.seatsAvailable }} seat{{ offer.seatsAvailable === 1 ? '' : 's' }} left
+            </div>
+            <div class="result-price">₹{{ offer.price | number }}</div>
+            <button
+              class="select-btn"
+              [disabled]="offer.seatsAvailable === 0"
+              (click)="selectFlight(offer)"
+            >
+              {{ offer.seatsAvailable === 0 ? 'Sold out' : 'Select' }}
+            </button>
+          </div>
+        }
+      }
+    </div>
+  }
+</div>

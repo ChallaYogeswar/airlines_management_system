@@ -1,0 +1,22 @@
+# Maven build output
+/target/
+
+# IDEs and editors
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local override configs (never commit real secrets)
+application-local.yml
+application-local.yaml
+.env

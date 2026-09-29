@@ -1,0 +1,57 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ams-backend
+  datasource:
+    url: jdbc:h2:mem:ams;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+ams:
+  cors:
+    allowed-origins: http://localhost:4200
+  flight-engine:
+    tick-interval-ms: 3200
+  opensky:
+    base-url: https://opensky-network.org/api
+    poll-interval-ms: 20000
+    bounding-box:
+      # South/central India - Chennai / Hyderabad / Bengaluru triangle.
+      # Widen this if you want a bigger slice of live traffic.
+      lamin: 8.0
+      lomin: 76.0
+      lamax: 19.5
+      lomax: 85.0
+  security:
+    # DEV-ONLY DEFAULT - override via AMS_JWT_SECRET env var in any real
+    # deployment. Must be >= 32 bytes for HS256; generate one with e.g.
+    # `openssl rand -base64 48`.
+    jwt-secret: ${AMS_JWT_SECRET:dev-only-secret-change-me-before-deploying-anywhere-real-0000}
+    access-token-ttl-minutes: 15
+    refresh-token-ttl-days: 7
+    max-failed-login-attempts: 5
+    lockout-minutes: 15
+  admin:
+    bootstrap-email: ${AMS_ADMIN_EMAIL:admin@meridianair.example}
+    # Unset by default - AdminUserSeeder generates and logs a random
+    # password once if this isn't provided. Set AMS_ADMIN_PASSWORD
+    # explicitly for anything beyond local dev.
+    bootstrap-password: ${AMS_ADMIN_PASSWORD:}
+
+logging:
+  level:
+    com.meridianair.ams: INFO

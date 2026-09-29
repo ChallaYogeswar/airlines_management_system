@@ -1,0 +1,12 @@
+<div class="rail">
+  <div class="readout">{{ currentAltitude() | number }}<span>FT</span></div>
+  <div class="tape" [style.transform]="'translateY(' + tapeOffsetPx() + 'px)'">
+    @for (tick of ticks(); track tick.offset) {
+      <div class="tick" [style.top.px]="tick.offset">
+        <span class="mark"></span>
+        <span class="label">{{ tick.value | number }}</span>
+      </div>
+    }
+  </div>
+  <div class="centerline"></div>
+</div>

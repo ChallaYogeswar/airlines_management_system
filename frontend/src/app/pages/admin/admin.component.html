@@ -1,0 +1,18 @@
+<div class="admin-page">
+  <div class="eyebrow-line"></div>
+  <h1>Admin.</h1>
+
+  <div class="tabs">
+    <button class="tab" [class.active]="tab() === 'flights'" (click)="setTab('flights')">Flights</button>
+    <button class="tab" [class.active]="tab() === 'users'" (click)="setTab('users')">Users</button>
+    <button class="tab" [class.active]="tab() === 'bookings'" (click)="setTab('bookings')">Bookings</button>
+  </div>
+
+  <div class="tab-content">
+    @switch (tab()) {
+      @case ('flights') { <app-admin-flights></app-admin-flights> }
+      @case ('users') { <app-admin-users></app-admin-users> }
+      @case ('bookings') { <app-admin-bookings></app-admin-bookings> }
+    }
+  </div>
+</div>

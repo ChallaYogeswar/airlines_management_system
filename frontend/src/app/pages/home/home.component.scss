@@ -1,0 +1,32 @@
+.hero {
+  padding: 64px 0 48px;
+  max-width: 560px;
+}
+
+.hero h1 {
+  font-size: 46px;
+  line-height: 1.16;
+}
+
+.hero p {
+  color: var(--muted);
+  margin-top: 16px;
+}
+
+.board-section {
+  padding: 24px 0 40px;
+}
+
+.radar-section {
+  padding: 0 0 24px;
+  text-align: center;
+}
+
+.radar-section h2 {
+  font-size: 20px;
+  margin-bottom: 32px;
+}
+
+.spacer {
+  height: 200px;
+}

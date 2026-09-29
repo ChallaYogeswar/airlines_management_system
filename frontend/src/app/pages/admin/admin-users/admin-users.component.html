@@ -1,0 +1,36 @@
+@if (loading()) {
+  <p class="status-text">Loading…</p>
+} @else {
+  <div class="table">
+    <div class="table-head">
+      <span>User</span><span>Roles</span><span>Joined</span><span>Last login</span>
+    </div>
+
+    @for (user of users(); track user.id) {
+      <div class="row">
+        <div class="user-col">
+          <div class="name">{{ user.name }}</div>
+          <div class="email">{{ user.email }}</div>
+          @if (errorByUser()[user.id]) {
+            <div class="row-error">{{ errorByUser()[user.id] }}</div>
+          }
+        </div>
+        <div class="roles-col">
+          @for (role of roles; track role) {
+            <label class="role-checkbox">
+              <input
+                type="checkbox"
+                [checked]="hasRole(user, role)"
+                [disabled]="savingId() === user.id"
+                (change)="toggleRole(user, role, $any($event.target).checked)"
+              />
+              {{ role }}
+            </label>
+          }
+        </div>
+        <div class="date-col">{{ user.createdAt | date: 'd MMM y' }}</div>
+        <div class="date-col">{{ user.lastLoginAt ? (user.lastLoginAt | date: 'd MMM, shortTime') : '—' }}</div>
+      </div>
+    }
+  </div>
+}

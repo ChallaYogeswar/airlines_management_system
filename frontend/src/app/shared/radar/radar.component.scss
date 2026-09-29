@@ -1,0 +1,81 @@
+:host {
+  display: block;
+}
+
+.radar {
+  position: relative;
+  width: 340px;
+  height: 340px;
+  margin: 0 auto;
+}
+
+.ring {
+  position: absolute;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.r1 { width: 100px; height: 100px; }
+.r2 { width: 200px; height: 200px; }
+.r3 { width: 300px; height: 300px; }
+
+.sweep {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 170px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+  transform-origin: left center;
+  animation: spin 6s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: var(--text);
+  border-radius: 50%;
+}
+
+.node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brass);
+  box-shadow: 0 0 8px var(--brass);
+  transform: translate(-50%, -50%);
+  /* positions update on every push from the backend/fallback - transitioning
+     left/top instead of snapping makes that read as flight, not teleporting */
+  transition: left 1.8s linear, top 1.8s linear;
+  cursor: default;
+}
+
+.node.ground {
+  background: var(--muted);
+  box-shadow: none;
+}
+
+.radar-label {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  letter-spacing: 0.4px;
+}

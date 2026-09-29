@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Departure Board — Direction 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F4EF;
+    --ink:#17181C;
+    --amber:#F2A900;
+    --line:#D8D5C8;
+    --muted:#6B6A62;
+    --board:#141310;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;}
+
+  nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:32px 64px; border-bottom:2px solid var(--ink);
+  }
+  .brand{font-family:'Archivo',sans-serif; font-weight:900; font-size:20px; letter-spacing:-0.3px;}
+  .brand em{font-style:normal; color:var(--amber);}
+  .navlinks{display:flex; gap:32px; font-size:14px;}
+  .navlinks a{color:var(--ink); text-decoration:none; font-weight:500;}
+  .book-btn{
+    background:var(--ink); color:var(--bg); padding:10px 20px; border-radius:2px;
+    font-weight:700; font-size:13px; text-decoration:none;
+  }
+
+  .hero{padding:72px 64px 32px; max-width:960px;}
+  h1{
+    font-family:'Archivo',sans-serif; font-weight:900; font-size:56px; line-height:1.05;
+    letter-spacing:-1px; max-width:680px;
+  }
+  .lede{margin-top:20px; font-size:17px; color:var(--muted); max-width:520px; line-height:1.65;}
+
+  .board{
+    background:var(--board); border-radius:6px; padding:22px 24px; margin:48px 64px 0;
+    box-shadow:0 20px 40px rgba(0,0,0,0.12);
+  }
+  .board-head{
+    display:grid; grid-template-columns:90px 1fr 1fr 90px 90px; gap:12px;
+    font-family:'Inter',sans-serif; font-size:11px; color:#8A8676; font-weight:500;
+    padding:0 14px 12px; border-bottom:1px solid #33312A; letter-spacing:0.5px;
+  }
+  .row{
+    display:grid; grid-template-columns:90px 1fr 1fr 90px 90px; gap:12px;
+    align-items:center; padding:14px; border-bottom:1px solid #262419;
+  }
+  .row:last-child{border-bottom:none;}
+  .flap{
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:17px;
+    color:#F5F4EF; letter-spacing:0.5px;
+  }
+  .flap.amber{color:var(--amber);}
+  .flap.mono{font-family:'Archivo',sans-serif; font-weight:500; font-size:14px; color:#B8B4A0;}
+  .tag{
+    font-size:11px; font-weight:700; padding:3px 8px; border-radius:2px;
+    letter-spacing:0.5px; width:fit-content;
+  }
+  .tag.ontime{background:rgba(79,209,197,0.15); color:#6FE0D3;}
+  .tag.board{background:rgba(242,169,0,0.18); color:var(--amber);}
+  .row{animation:flapin 0.5s ease both;}
+  .row:nth-child(2){animation-delay:0.05s;}
+  .row:nth-child(3){animation-delay:0.1s;}
+  .row:nth-child(4){animation-delay:0.15s;}
+  .row:nth-child(5){animation-delay:0.2s;}
+  @keyframes flapin{
+    0%{opacity:0; transform:rotateX(-90deg); transform-origin:top;}
+    100%{opacity:1; transform:rotateX(0deg);}
+  }
+
+  .searchbar{
+    display:flex; gap:1px; margin:0 64px 96px; background:var(--ink); border-radius:4px;
+    overflow:hidden;
+  }
+  .searchbar .seg{background:var(--bg); padding:18px 22px; flex:1;}
+  .searchbar .seg label{display:block; font-size:11px; color:var(--muted); font-weight:500; margin-bottom:4px;}
+  .searchbar .seg .v{font-family:'Archivo',sans-serif; font-weight:700; font-size:16px;}
+  .searchbar .go{background:var(--amber); border:none; padding:0 32px; font-family:'Archivo',sans-serif; font-weight:900; font-size:14px; color:var(--ink); cursor:pointer;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">TARMAC<em>.</em></div>
+  <div class="navlinks">
+    <a href="#">Flights</a>
+    <a href="#">Check-in</a>
+    <a href="#">My trips</a>
+  </div>
+  <a class="book-btn" href="#">Book a flight</a>
+</nav>
+
+<div class="hero">
+  <h1>The board never lies.</h1>
+  <p class="lede">Real departure times, real gates, updated the second they change — the way it's always worked at the airport, now in your pocket.</p>
+</div>
+
+<div class="board">
+  <div class="board-head">
+    <span>TIME</span><span>FLIGHT</span><span>TO</span><span>GATE</span><span>STATUS</span>
+  </div>
+  <div class="row">
+    <div class="flap">06:40</div>
+    <div class="flap">SPICEJET 757</div>
+    <div class="flap mono">HYDERABAD</div>
+    <div class="flap">A14</div>
+    <div class="tag board">BOARDING</div>
+  </div>
+  <div class="row">
+    <div class="flap">08:15</div>
+    <div class="flap">AKASA 123</div>
+    <div class="flap mono">BENGALURU</div>
+    <div class="flap">B03</div>
+    <div class="tag ontime">ON TIME</div>
+  </div>
+  <div class="row">
+    <div class="flap amber">09:05</div>
+    <div class="flap">INDIGO 667</div>
+    <div class="flap mono">HYDERABAD</div>
+    <div class="flap">A09</div>
+    <div class="tag ontime">ON TIME</div>
+  </div>
+  <div class="row">
+    <div class="flap">11:20</div>
+    <div class="flap">AIR INDIA 667</div>
+    <div class="flap mono">HYDERABAD</div>
+    <div class="flap">C02</div>
+    <div class="tag ontime">ON TIME</div>
+  </div>
+</div>
+
+<div class="searchbar">
+  <div class="seg"><label>From</label><div class="v">Chennai</div></div>
+  <div class="seg"><label>To</label><div class="v">Hyderabad</div></div>
+  <div class="seg"><label>Depart</label><div class="v">03 Jan</div></div>
+  <div class="seg"><label>Travellers</label><div class="v">1</div></div>
+  <button class="go">Find flights</button>
+</div>
+
+</body>
+</html>

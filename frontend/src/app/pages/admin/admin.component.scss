@@ -1,0 +1,38 @@
+.admin-page {
+  padding: 64px 0 80px;
+}
+
+.eyebrow-line {
+  width: 36px;
+  height: 1px;
+  background: var(--brass);
+  margin-bottom: 22px;
+}
+
+h1 {
+  font-size: 38px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 32px 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tab {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tab.active {
+  color: var(--text);
+  border-bottom-color: var(--brass);
+}

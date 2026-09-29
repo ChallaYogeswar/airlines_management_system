@@ -1,0 +1,38 @@
+<div class="board-heading">
+  <div class="title-row">
+    <h2>Departures — Chennai (MAA)</h2>
+    <span class="source-badge" [class.live]="liveSource() === 'backend'">
+      <span class="pulse"></span>
+      {{ liveSource() === 'backend' ? 'Live — backend engine' : liveSource() === 'connecting' ? 'Connecting…' : 'Live — local simulation' }}
+    </span>
+  </div>
+  <div class="legend">
+    <span><span class="sw" style="background: var(--green)"></span>On time</span>
+    <span><span class="sw" style="background: var(--red)"></span>Delayed / departed</span>
+    <span><span class="sw" style="background: var(--amber)"></span>Boarding</span>
+    <span><span class="sw" style="background: var(--cyan)"></span>On runway</span>
+  </div>
+</div>
+
+<div class="board">
+  <div class="board-head">
+    <span>Time</span><span>Flight</span><span>To</span><span>Gate</span><span>Status</span>
+  </div>
+
+  @for (flight of flights(); track trackByFlightId($index, flight)) {
+    <div class="row" [@flap]="flight.updatedAt">
+      <div class="cell">{{ flight.time }}</div>
+      <div class="cell name">{{ flight.flightNumber }}</div>
+      <div class="cell">{{ flight.destination }}</div>
+      <div class="cell">{{ flight.gate }}</div>
+      <div
+        class="tag"
+        [style.background]="'var(' + statusMeta[flight.status].bgVar + ')'"
+        [style.color]="'var(' + statusMeta[flight.status].colorVar + ')'"
+      >
+        <span class="sw" [style.background]="'var(' + statusMeta[flight.status].colorVar + ')'"></span>
+        {{ statusMeta[flight.status].label }}{{ flight.status === 'delayed' && flight.delayMinutes ? ' ' + flight.delayMinutes + 'm' : '' }}
+      </div>
+    </div>
+  }
+</div>

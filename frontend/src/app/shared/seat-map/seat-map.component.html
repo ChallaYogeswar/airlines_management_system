@@ -1,0 +1,34 @@
+<div class="seat-map">
+  <div class="cabin-label">Front</div>
+
+  @for (row of rows(); track row.label) {
+    <div class="row">
+      <span class="row-number">{{ row.label }}</span>
+      <div class="seats">
+        @for (seat of row.seats; track seat.id; let i = $index) {
+          @if (i === 2) {
+            <span class="aisle"></span>
+          }
+          <button
+            type="button"
+            class="seat"
+            [class]="seatState(seat)"
+            [class.business]="seat.seatClass === 'BUSINESS'"
+            [disabled]="seatState(seat) === 'taken'"
+            (click)="onSeatClick(seat)"
+            [title]="seat.seatNumber + ' — ' + (seat.seatClass === 'BUSINESS' ? 'Business' : 'Economy')"
+          >
+            {{ seat.seatNumber }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="legend">
+    <span><span class="sw available"></span>Available</span>
+    <span><span class="sw selected"></span>Your selection</span>
+    <span><span class="sw taken"></span>Taken</span>
+    <span><span class="sw business-sw"></span>Business</span>
+  </div>
+</div>

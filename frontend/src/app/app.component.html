@@ -1,0 +1,31 @@
+<app-altitude-rail></app-altitude-rail>
+
+<div class="page">
+  <nav>
+    <div class="brand">Meridian<em>Air</em></div>
+
+    <div class="nav-links">
+      <a routerLink="/search">Search flights</a>
+      @if (authService.isAuthenticated()) {
+        <a routerLink="/bookings">My bookings</a>
+      }
+      @if (authService.hasRole('ADMIN')) {
+        <a routerLink="/admin">Admin</a>
+      }
+    </div>
+
+    @if (authService.isAuthenticated()) {
+      <div class="nav-auth">
+        <span class="user-name">{{ authService.currentUser()?.name }}</span>
+        <button class="logout-btn" (click)="logout()">Sign out</button>
+      </div>
+    } @else {
+      <div class="nav-auth">
+        <a routerLink="/login">Sign in</a>
+        <a routerLink="/register" class="nav-cta">Create account</a>
+      </div>
+    }
+  </nav>
+
+  <router-outlet></router-outlet>
+</div>

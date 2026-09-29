@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Meridian — Unified Direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220;
+    --panel:#121A2E;
+    --panel-2:#161F38;
+    --line:#26314D;
+    --brass:#D9A752;
+    --text:#ECEEF2;
+    --muted:#8A93AC;
+    --green:#4ADE80; --green-bg:rgba(74,222,128,0.12);
+    --red:#F87171; --red-bg:rgba(248,113,113,0.12);
+    --amber:#FBBF24; --amber-bg:rgba(251,191,36,0.14);
+    --cyan:#38BDF8; --cyan-bg:rgba(56,189,248,0.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;}
+
+  /* left altitude rail — scrolling tape */
+  .rail{
+    position:fixed; left:0; top:0; bottom:0; width:64px;
+    border-right:1px solid var(--line); overflow:hidden; z-index:5;
+    background:var(--bg);
+  }
+  .tape{position:absolute; left:0; width:100%; animation:scrollup 14s linear infinite;}
+  .tape span{
+    display:block; text-align:center; padding:18px 0;
+    font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);
+    border-bottom:1px solid var(--line);
+  }
+  @keyframes scrollup{from{transform:translateY(0);} to{transform:translateY(-50%);}}
+
+  nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:28px 56px 28px 96px; border-bottom:1px solid var(--line); margin-left:64px;
+  }
+  .brand{font-family:'Fraunces',serif; font-weight:500; font-size:20px;}
+  .brand em{font-style:normal; color:var(--brass);}
+  .navlinks{display:flex; gap:36px; font-size:14px; color:var(--muted);}
+  .navlinks a{color:var(--muted); text-decoration:none;}
+  .status{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--cyan); display:flex; align-items:center; gap:8px;}
+  .dot-live{width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 6px var(--cyan);}
+
+  .hero{
+    margin-left:64px; display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px;
+    padding:72px 56px 64px 96px; align-items:center;
+  }
+  .eyebrow-line{width:36px; height:1px; background:var(--brass); margin-bottom:22px;}
+  h1{
+    font-family:'Fraunces',serif; font-weight:500; font-size:46px; line-height:1.16;
+    letter-spacing:-0.3px; max-width:520px;
+  }
+  .lede{margin-top:20px; color:var(--muted); font-size:16px; max-width:440px; line-height:1.7;}
+
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:4px; padding:26px; margin-top:36px;}
+  .panel-row{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border-radius:4px; overflow:hidden; margin-bottom:1px;}
+  .field{background:var(--panel-2); padding:15px 18px;}
+  .field label{display:block; font-size:11px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:5px;}
+  .field .val{font-size:15px; font-weight:500;}
+  .switchrow{display:flex; align-items:center; gap:18px; margin:16px 0 20px;}
+  .toggle{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); cursor:pointer;}
+  .toggle .box{width:14px; height:14px; border:1px solid var(--line); border-radius:2px;}
+  .toggle.active{color:var(--text);}
+  .toggle.active .box{background:var(--brass); border-color:var(--brass);}
+  .go-btn{
+    width:100%; padding:13px; background:var(--brass); color:#1A1206; border:none;
+    font-family:'Fraunces',serif; font-weight:600; font-size:15px; border-radius:3px; cursor:pointer;
+  }
+
+  .radar{position:relative; width:340px; height:340px; margin:0 auto;}
+  .ring{position:absolute; border:1px solid var(--line); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .r1{width:100px;height:100px;} .r2{width:200px;height:200px;} .r3{width:300px;height:300px;}
+  .sweep{
+    position:absolute; top:50%; left:50%; width:170px; height:1px;
+    background:linear-gradient(90deg, var(--cyan), transparent);
+    transform-origin:left center; animation:spin 6s linear infinite; opacity:0.6;
+  }
+  @keyframes spin{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
+  .node{position:absolute; width:6px; height:6px; border-radius:50%; background:var(--brass); box-shadow:0 0 8px var(--brass);}
+  .n1{top:30%; left:65%;} .n2{top:62%; left:28%;} .n3{top:40%; left:20%;} .n4{top:72%; left:60%;}
+  .hub{position:absolute; top:50%; left:50%; width:10px; height:10px; margin:-5px 0 0 -5px; background:var(--text); border-radius:50%;}
+  .radar-label{position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);}
+
+  /* departure board — the hero centerpiece */
+  .board-section{margin-left:64px; padding:24px 56px 100px 96px;}
+  .board-heading{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:20px;}
+  .board-heading h2{font-family:'Fraunces',serif; font-weight:500; font-size:26px;}
+  .legend{display:flex; gap:20px; font-size:12px; color:var(--muted);}
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .legend .sw{width:8px; height:8px; border-radius:50%;}
+
+  .board{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:8px; box-shadow:0 24px 48px rgba(0,0,0,0.35);}
+  .board-head{
+    display:grid; grid-template-columns:90px 1fr 1fr 80px 140px; gap:12px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
+    padding:14px 18px; letter-spacing:0.4px;
+  }
+  .row{
+    display:grid; grid-template-columns:90px 1fr 1fr 80px 140px; gap:12px; align-items:center;
+    padding:16px 18px; border-top:1px solid var(--line);
+  }
+  .cell{font-family:'IBM Plex Mono',monospace; font-size:14px;}
+  .cell.name{font-family:'Inter',sans-serif; font-weight:500; font-size:14px;}
+  .tag{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:500; padding:5px 10px; border-radius:3px; width:fit-content;}
+  .tag .sw{width:6px; height:6px; border-radius:50%;}
+  .tag.ontime{background:var(--green-bg); color:var(--green);}
+  .tag.delayed{background:var(--red-bg); color:var(--red);}
+  .tag.boarding{background:var(--amber-bg); color:var(--amber);}
+  .tag.runway{background:var(--cyan-bg); color:var(--cyan);}
+</style>
+</head>
+<body>
+
+<div class="rail">
+  <div class="tape">
+    <span>41,000</span><span>38,000</span><span>35,000</span><span>32,000</span>
+    <span>29,000</span><span>26,000</span><span>23,000</span><span>20,000</span>
+    <span>41,000</span><span>38,000</span><span>35,000</span><span>32,000</span>
+    <span>29,000</span><span>26,000</span><span>23,000</span><span>20,000</span>
+  </div>
+</div>
+
+<nav>
+  <div class="brand">Meridian<em>Air</em></div>
+  <div class="navlinks"><a href="#">Book</a><a href="#">Manage trip</a><a href="#">Status</a><a href="#">Fleet</a></div>
+  <div class="status"><span class="dot-live"></span> 214 aircraft active</div>
+</nav>
+
+<div class="hero">
+  <div>
+    <div class="eyebrow-line"></div>
+    <h1>Every seat has a flight plan.</h1>
+    <p class="lede">Search live routes, hold a fare, or track your aircraft's exact position — one panel, built like the ones our pilots use.</p>
+
+    <div class="panel">
+      <div class="panel-row">
+        <div class="field"><label>From</label><div class="val">Chennai (MAA)</div></div>
+        <div class="field"><label>To</label><div class="val">Hyderabad (HYD)</div></div>
+      </div>
+      <div class="panel-row">
+        <div class="field"><label>Depart</label><div class="val">03 Jan</div></div>
+        <div class="field"><label>Passengers</label><div class="val">1 adult</div></div>
+      </div>
+      <div class="switchrow">
+        <div class="toggle active"><div class="box"></div> Round trip</div>
+        <div class="toggle"><div class="box"></div> Flexible dates</div>
+      </div>
+      <button class="go-btn">Search flights</button>
+    </div>
+  </div>
+
+  <div class="radar">
+    <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+    <div class="sweep"></div><div class="hub"></div>
+    <div class="node n1"></div><div class="node n2"></div><div class="node n3"></div><div class="node n4"></div>
+    <div class="radar-label">HYD HUB — 4 INBOUND</div>
+  </div>
+</div>
+
+<div class="board-section">
+  <div class="board-heading">
+    <h2>Departures — Chennai (MAA)</h2>
+    <div class="legend">
+      <span><span class="sw" style="background:var(--green)"></span>On time</span>
+      <span><span class="sw" style="background:var(--red)"></span>Delayed / departed</span>
+      <span><span class="sw" style="background:var(--amber)"></span>Boarding</span>
+      <span><span class="sw" style="background:var(--cyan)"></span>On runway</span>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-head"><span>TIME</span><span>FLIGHT</span><span>TO</span><span>GATE</span><span>STATUS</span></div>
+
+    <div class="row">
+      <div class="cell">06:40</div>
+      <div class="cell name">SpiceJet 757</div>
+      <div class="cell">Hyderabad</div>
+      <div class="cell">A14</div>
+      <div class="tag boarding"><span class="sw" style="background:var(--amber)"></span>Boarding</div>
+    </div>
+    <div class="row">
+      <div class="cell">07:10</div>
+      <div class="cell name">IndiGo 340</div>
+      <div class="cell">Mumbai</div>
+      <div class="cell">B02</div>
+      <div class="tag runway"><span class="sw" style="background:var(--cyan)"></span>On runway</div>
+    </div>
+    <div class="row">
+      <div class="cell">08:15</div>
+      <div class="cell name">Akasa 123</div>
+      <div class="cell">Bengaluru</div>
+      <div class="cell">B03</div>
+      <div class="tag ontime"><span class="sw" style="background:var(--green)"></span>On time</div>
+    </div>
+    <div class="row">
+      <div class="cell">09:05</div>
+      <div class="cell name">Indigo 667</div>
+      <div class="cell">Hyderabad</div>
+      <div class="cell">A09</div>
+      <div class="tag delayed"><span class="sw" style="background:var(--red)"></span>Delayed 40m</div>
+    </div>
+    <div class="row">
+      <div class="cell">09:40</div>
+      <div class="cell name">Air India 667</div>
+      <div class="cell">Hyderabad</div>
+      <div class="cell">C02</div>
+      <div class="tag ontime"><span class="sw" style="background:var(--green)"></span>On time</div>
+    </div>
+    <div class="row">
+      <div class="cell">05:55</div>
+      <div class="cell name">Vistara 220</div>
+      <div class="cell">Kolkata</div>
+      <div class="cell">A02</div>
+      <div class="tag delayed"><span class="sw" style="background:var(--red)"></span>Departed</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

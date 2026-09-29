@@ -1,0 +1,25 @@
+# Activate with --spring.profiles.active=prod (or SPRING_PROFILES_ACTIVE=prod).
+# All values below are meant to come from the environment - nothing
+# sensitive belongs in this file itself.
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ams}
+    username: ${DB_USERNAME:ams}
+    password: ${DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      # "update" is fine for early development; once this has real data,
+      # switch to a migration tool (Flyway/Liquibase) and set this to
+      # "validate" so schema changes are deliberate, not automatic.
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: false
+
+ams:
+  security:
+    jwt-secret: ${AMS_JWT_SECRET:?AMS_JWT_SECRET must be set in production}
+  cors:
+    allowed-origins: ${AMS_ALLOWED_ORIGINS:https://your-production-domain.example}

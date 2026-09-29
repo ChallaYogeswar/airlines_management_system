@@ -1,0 +1,96 @@
+<div class="admin-flights">
+  <div class="toolbar">
+    <button class="toggle-btn" (click)="toggleCreateForm()">
+      {{ showCreateForm() ? 'Cancel' : '+ New flight' }}
+    </button>
+  </div>
+
+  @if (showCreateForm()) {
+    <form [formGroup]="createForm" (ngSubmit)="submitCreate()" class="create-form">
+      <div class="grid">
+        <label class="field">
+          <span>Flight number</span>
+          <input type="text" formControlName="flightNumber" placeholder="SpiceJet 757" />
+        </label>
+        <label class="field">
+          <span>Origin</span>
+          <input type="text" formControlName="origin" maxlength="3" placeholder="MAA" />
+        </label>
+        <label class="field">
+          <span>Destination</span>
+          <input type="text" formControlName="destination" maxlength="3" placeholder="HYD" />
+        </label>
+        <label class="field">
+          <span>Departure</span>
+          <input type="datetime-local" formControlName="departureTime" />
+        </label>
+        <label class="field">
+          <span>Arrival</span>
+          <input type="datetime-local" formControlName="arrivalTime" />
+        </label>
+        <label class="field">
+          <span>Price (₹)</span>
+          <input type="number" formControlName="price" min="0" />
+        </label>
+        <label class="field">
+          <span>Total seats</span>
+          <input type="number" formControlName="totalSeats" min="1" />
+        </label>
+      </div>
+      <button type="submit" class="submit-btn" [disabled]="createForm.invalid">Create flight</button>
+    </form>
+  }
+
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+
+  @if (loading()) {
+    <p class="status-text">Loading…</p>
+  } @else {
+    <div class="table">
+      <div class="table-head">
+        <span>Flight</span><span>Route</span><span>Schedule</span><span>Price</span><span>Seats</span><span></span>
+      </div>
+
+      @for (offer of flights(); track offer.id) {
+        @if (editingId() === offer.id) {
+          <form [formGroup]="editForm" (ngSubmit)="submitEdit(offer.id)" class="edit-row">
+            <span class="static-cell">{{ offer.flightNumber }}</span>
+            <span class="static-cell">{{ offer.origin }} → {{ offer.destination }}</span>
+            <span class="edit-times">
+              <input type="datetime-local" formControlName="departureTime" />
+              <input type="datetime-local" formControlName="arrivalTime" />
+            </span>
+            <input type="number" formControlName="price" min="0" class="edit-number" />
+            <input type="number" formControlName="totalSeats" min="1" class="edit-number" />
+            <span class="row-actions">
+              <button type="submit" class="save-btn" [disabled]="editForm.invalid || savingId() === offer.id">
+                {{ savingId() === offer.id ? 'Saving…' : 'Save' }}
+              </button>
+              <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+            </span>
+          </form>
+        } @else {
+          <div class="row">
+            <span class="flight-number">{{ offer.flightNumber }}</span>
+            <span class="route">{{ offer.origin }} → {{ offer.destination }}</span>
+            <span class="schedule">{{ offer.departureTime | date: 'd MMM, shortTime' }}</span>
+            <span class="price">₹{{ offer.price | number }}</span>
+            <span class="seats">{{ offer.seatsAvailable }} / {{ offer.totalSeats }}</span>
+            <span class="row-actions">
+              <button class="edit-btn" (click)="startEdit(offer)">Edit</button>
+              <button
+                class="delete-btn"
+                [disabled]="deletingId() === offer.id"
+                (click)="deleteFlight(offer)"
+              >
+                {{ deletingId() === offer.id ? '…' : 'Delete' }}
+              </button>
+            </span>
+          </div>
+        }
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Night Ops — Direction 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220;
+    --panel:#121A2E;
+    --panel-2:#161F38;
+    --line:#26314D;
+    --amber:#E8A33D;
+    --cyan:#4FD1C5;
+    --text:#ECEEF2;
+    --muted:#8A93AC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .altitude-rail{
+    position:fixed; left:0; top:0; bottom:0; width:56px;
+    border-right:1px solid var(--line);
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:32px 0; z-index:5;
+  }
+  .altitude-rail span{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);
+    writing-mode:vertical-rl; text-orientation:mixed; padding-left:20px;
+  }
+  nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:28px 64px 28px 96px; border-bottom:1px solid var(--line);
+  }
+  .brand{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; letter-spacing:0.3px;}
+  .brand span{color:var(--amber);}
+  .navlinks{display:flex; gap:36px; font-size:14px; color:var(--muted);}
+  .navlinks a{color:var(--muted); text-decoration:none;}
+  .status{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--cyan);
+    display:flex; align-items:center; gap:8px;
+  }
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 6px var(--cyan);}
+
+  .hero{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px;
+    padding:72px 64px 96px 96px; align-items:center;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif; font-weight:500;
+    font-size:52px; line-height:1.12; letter-spacing:-0.5px;
+    max-width:560px;
+  }
+  .lede{margin-top:20px; color:var(--muted); font-size:16px; max-width:440px; line-height:1.7;}
+
+  .panel{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:28px; margin-top:40px;
+  }
+  .panel-row{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border-radius:4px; overflow:hidden; margin-bottom:1px;}
+  .field{background:var(--panel-2); padding:16px 18px;}
+  .field label{display:block; font-size:11px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:6px;}
+  .field .val{font-size:16px; font-weight:500;}
+  .switchrow{display:flex; align-items:center; gap:18px; margin:18px 0 22px;}
+  .toggle{
+    display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted);
+    cursor:pointer;
+  }
+  .toggle .box{width:14px; height:14px; border:1px solid var(--line); border-radius:2px; position:relative;}
+  .toggle.active{color:var(--text);}
+  .toggle.active .box{background:var(--amber); border-color:var(--amber);}
+  .go-btn{
+    width:100%; padding:14px; background:var(--amber); color:#1A1206; border:none;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; letter-spacing:0.3px;
+    border-radius:3px; cursor:pointer;
+  }
+
+  .radar{position:relative; width:420px; height:420px; margin:0 auto;}
+  .ring{position:absolute; border:1px solid var(--line); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%);}
+  .r1{width:120px;height:120px;} .r2{width:240px;height:240px;} .r3{width:360px;height:360px;}
+  .sweep{
+    position:absolute; top:50%; left:50%; width:210px; height:1px;
+    background:linear-gradient(90deg, var(--cyan), transparent);
+    transform-origin:left center; animation:spin 6s linear infinite;
+    opacity:0.6;
+  }
+  @keyframes spin{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
+  .node{position:absolute; width:6px; height:6px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px var(--amber);}
+  .n1{top:30%; left:65%;} .n2{top:62%; left:28%;} .n3{top:40%; left:20%;} .n4{top:72%; left:60%;}
+  .hub{position:absolute; top:50%; left:50%; width:10px; height:10px; margin:-5px 0 0 -5px;
+    background:var(--text); border-radius:50%;}
+  .radar-label{
+    position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="altitude-rail">
+  <span>35,000 FT</span>
+  <span>18,000 FT</span>
+  <span>SEA LEVEL</span>
+</div>
+
+<nav>
+  <div class="brand">MERIDIAN<span>AIR</span></div>
+  <div class="navlinks">
+    <a href="#">Book</a>
+    <a href="#">Manage trip</a>
+    <a href="#">Status</a>
+    <a href="#">Fleet</a>
+  </div>
+  <div class="status"><span class="dot"></span> 214 aircraft active</div>
+</nav>
+
+<div class="hero">
+  <div>
+    <h1>Every seat has a flight plan.</h1>
+    <p class="lede">Search live routes, hold a fare, or track your aircraft's exact position — one panel, built like the ones our pilots use.</p>
+
+    <div class="panel">
+      <div class="panel-row">
+        <div class="field"><label>From</label><div class="val">Chennai (MAA)</div></div>
+        <div class="field"><label>To</label><div class="val">Hyderabad (HYD)</div></div>
+      </div>
+      <div class="panel-row">
+        <div class="field"><label>Depart</label><div class="val">03 Jan</div></div>
+        <div class="field"><label>Passengers</label><div class="val">1 adult</div></div>
+      </div>
+      <div class="switchrow">
+        <div class="toggle active"><div class="box"></div> Round trip</div>
+        <div class="toggle"><div class="box"></div> Flexible dates</div>
+      </div>
+      <button class="go-btn">Search flights</button>
+    </div>
+  </div>
+
+  <div class="radar">
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="sweep"></div>
+    <div class="hub"></div>
+    <div class="node n1"></div>
+    <div class="node n2"></div>
+    <div class="node n3"></div>
+    <div class="node n4"></div>
+    <div class="radar-label">HYD HUB — 4 INBOUND</div>
+  </div>
+</div>
+
+</body>
+</html>

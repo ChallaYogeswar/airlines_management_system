@@ -1,0 +1,41 @@
+:root {
+  --bg: #0B1220;
+  --panel: #121A2E;
+  --panel-2: #161F38;
+  --line: #26314D;
+  --brass: #D9A752;
+  --text: #ECEEF2;
+  --muted: #8A93AC;
+
+  --green: #4ADE80;
+  --green-bg: rgba(74, 222, 128, 0.12);
+  --red: #F87171;
+  --red-bg: rgba(248, 113, 113, 0.12);
+  --amber: #FBBF24;
+  --amber-bg: rgba(251, 191, 36, 0.14);
+  --cyan: #38BDF8;
+  --cyan-bg: rgba(56, 189, 248, 0.12);
+
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-data: 'IBM Plex Mono', monospace;
+
+  --rail-width: 64px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  margin: 0;
+}

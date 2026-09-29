@@ -1,0 +1,155 @@
+<div class="booking-page">
+  @if (loadingFlight()) {
+    <p class="status-text">Loading flight…</p>
+  } @else if (loadError()) {
+    <div class="error">{{ loadError() }}</div>
+    <a routerLink="/search" class="back-link">← Back to search</a>
+  } @else if (confirmed()) {
+    <div class="confirmation">
+      <div class="eyebrow-line"></div>
+      <h1>Booking confirmed.</h1>
+      <div class="reference">{{ confirmed()!.bookingReference }}</div>
+      <p class="lede">
+        {{ confirmed()!.flightNumber }} · {{ confirmed()!.origin }} → {{ confirmed()!.destination }} ·
+        {{ confirmed()!.departureTime | date: 'medium' }}
+      </p>
+      <ul class="seat-list">
+        @for (p of confirmed()!.passengers; track p.seatNumber) {
+          <li>{{ p.seatNumber }} — {{ p.firstName }} {{ p.lastName }}</li>
+        }
+      </ul>
+      <p class="lede">Total ₹{{ confirmed()!.totalPrice | number }}</p>
+      <a routerLink="/bookings" class="cta-link">View my bookings</a>
+    </div>
+  } @else if (flight() && step() === 'seats') {
+    <div class="eyebrow-line"></div>
+    <h1>Choose your seats.</h1>
+
+    <div class="flight-summary">
+      <div>
+        <div class="flight-number">{{ flight()!.flightNumber }}</div>
+        <div class="route">{{ flight()!.origin }} → {{ flight()!.destination }}</div>
+      </div>
+      <div class="summary-time">{{ flight()!.departureTime | date: 'EEE, d MMM · shortTime' }}</div>
+    </div>
+
+    @if (loadingSeats()) {
+      <p class="status-text">Loading seat map…</p>
+    } @else {
+      <app-seat-map
+        [seats]="seats()"
+        [selectedIds]="selectedSeatIds()"
+        (seatClicked)="toggleSeat($event)"
+      ></app-seat-map>
+
+      @if (seatError()) {
+        <div class="error">{{ seatError() }}</div>
+      }
+
+      <div class="selection-bar">
+        <span>{{ selectedSeats().length }} seat(s) selected · ₹{{ totalPrice() | number }}</span>
+        <button
+          class="submit-btn"
+          [disabled]="selectedSeats().length === 0 || holdBusy()"
+          (click)="proceedToDetails()"
+        >
+          Continue
+        </button>
+      </div>
+    }
+  } @else if (flight() && step() === 'details') {
+    <div class="eyebrow-line"></div>
+    <h1>Passenger details.</h1>
+
+    <form [formGroup]="form" (ngSubmit)="submitDetails()">
+      <div formArrayName="passengers" class="passengers">
+        @for (group of passengers.controls; track $index; let i = $index) {
+          <div class="passenger-group" [formGroupName]="i">
+            <div class="passenger-heading">
+              <span>Seat {{ seatLabel(i) }}</span>
+            </div>
+            <div class="passenger-fields">
+              <label class="field">
+                <span>First name</span>
+                <input type="text" formControlName="firstName" />
+              </label>
+              <label class="field">
+                <span>Last name</span>
+                <input type="text" formControlName="lastName" />
+              </label>
+              <label class="field">
+                <span>Date of birth</span>
+                <input type="date" formControlName="dateOfBirth" />
+              </label>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="total-row">
+        <span>Total</span>
+        <span class="total-price">₹{{ totalPrice() | number }}</span>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="error">{{ errorMessage() }}</div>
+      }
+
+      <div class="form-actions">
+        <button type="button" class="back-btn" (click)="backToSeats()">← Change seats</button>
+        <button type="submit" class="submit-btn" [disabled]="form.invalid || submitting()">
+          {{ submitting() ? 'Saving…' : 'Continue to payment' }}
+        </button>
+      </div>
+    </form>
+  } @else if (pendingBooking() && step() === 'payment') {
+    <div class="eyebrow-line"></div>
+    <h1>Payment.</h1>
+    <p class="lede">
+      {{ pendingBooking()!.bookingReference }} · {{ pendingBooking()!.passengers.length }} passenger(s) ·
+      ₹{{ pendingBooking()!.totalPrice | number }}
+    </p>
+
+    <div class="test-card-hint">
+      This is a simulated gateway — no real charge happens. Try
+      <code>4242 4242 4242 4242</code> (always succeeds) or
+      <code>4000 0000 0000 0002</code> (always declines), or any other
+      valid-looking card number for a realistic ~90% approval rate.
+    </div>
+
+    <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
+      <label class="field">
+        <span>Cardholder name</span>
+        <input type="text" formControlName="cardholderName" autocomplete="cc-name" />
+      </label>
+      <label class="field">
+        <span>Card number</span>
+        <input type="text" formControlName="cardNumber" autocomplete="cc-number" placeholder="4242 4242 4242 4242" />
+      </label>
+      <div class="card-row">
+        <label class="field">
+          <span>Expiry month</span>
+          <input type="text" formControlName="expiryMonth" autocomplete="cc-exp-month" placeholder="MM" maxlength="2" />
+        </label>
+        <label class="field">
+          <span>Expiry year</span>
+          <input type="text" formControlName="expiryYear" autocomplete="cc-exp-year" placeholder="YY" maxlength="4" />
+        </label>
+        <label class="field">
+          <span>CVV</span>
+          <input type="text" formControlName="cvv" autocomplete="cc-csc" placeholder="123" maxlength="4" />
+        </label>
+      </div>
+
+      @if (declineReason()) {
+        <div class="error">{{ declineReason() }} — try a different card.</div>
+      }
+
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="paymentForm.invalid || paying()">
+          {{ paying() ? 'Processing…' : 'Pay ₹' + (pendingBooking()!.totalPrice | number) }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

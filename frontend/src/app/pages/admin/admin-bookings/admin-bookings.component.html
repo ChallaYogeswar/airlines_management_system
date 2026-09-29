@@ -1,0 +1,24 @@
+@if (loading()) {
+  <p class="status-text">Loading…</p>
+} @else if (bookings().length === 0) {
+  <p class="status-text">No bookings yet.</p>
+} @else {
+  <div class="table">
+    <div class="table-head">
+      <span>Reference</span><span>Flight</span><span>Departs</span><span>Passengers</span><span>Total</span><span>Status</span>
+    </div>
+
+    @for (booking of bookings(); track booking.id) {
+      <div class="row" [class.cancelled]="booking.status === 'CANCELLED'">
+        <span class="reference">{{ booking.bookingReference }}</span>
+        <span class="flight">{{ booking.flightNumber }} · {{ booking.origin }} → {{ booking.destination }}</span>
+        <span class="time">{{ booking.departureTime | date: 'd MMM, shortTime' }}</span>
+        <span class="passengers">{{ booking.passengers.length }}</span>
+        <span class="price">₹{{ booking.totalPrice | number }}</span>
+        <span class="status" [class]="booking.status.toLowerCase()">
+          {{ statusLabel(booking.status) }}
+        </span>
+      </div>
+    }
+  </div>
+}
