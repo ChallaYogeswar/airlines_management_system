@@ -1,10 +1,23 @@
 import { environment } from '../../environments/environment';
 
-// Re-exported as `backendConfig` (rather than importing `environment`
-// directly everywhere) so call sites don't change if more non-backend
-// settings get added to the environment files later.
+declare global {
+  interface Window {
+    __AMS_CONFIG__?: {
+      httpBase?: string;
+      wsUrl?: string;
+    };
+  }
+}
+
+const runtime = typeof window !== 'undefined' ? window.__AMS_CONFIG__ : undefined;
+
+const normalizeOrigin = (value: string): string => value.replace(/\/$/, '');
+
+const httpBase = normalizeOrigin(runtime?.httpBase || environment.httpBase);
+const wsUrl = runtime?.wsUrl ? normalizeOrigin(runtime.wsUrl) : normalizeOrigin(environment.wsUrl);
+
 export const backendConfig = {
-  httpBase: environment.httpBase,
-  wsUrl: environment.wsUrl,
+  httpBase,
+  wsUrl,
   connectTimeoutMs: environment.connectTimeoutMs,
 };

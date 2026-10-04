@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
  * Access tokens carry roles so the JWT filter can populate Spring
  * Security's authorities without a database round trip on every request.
  * Refresh tokens intentionally carry nothing but the subject and a
- * "type" claim - their only job is to prove identity long enough to mint
- * a new access token, and SessionService independently verifies them
+ * "type" claim - their only job is to prove identity long enough to mint a
+ * new access token, and SessionService independently verifies them
  * against a stored hash before that's allowed to happen.
  */
 @Component
@@ -38,11 +38,19 @@ public class JwtService {
 
     public JwtService(SecurityProperties properties) {
         this.properties = properties;
-        byte[] secretBytes = properties.jwtSecret().getBytes(StandardCharsets.UTF_8);
+
+        String secret = properties.jwtSecret();
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException(
+                    "AMS_JWT_SECRET must be set in production and must contain at least 32 bytes");
+        }
+
+        byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
         if (secretBytes.length < 32) {
             throw new IllegalStateException(
-                    "ams.security.jwt-secret must be at least 32 bytes (256 bits) for HS256");
+                    "AMS_JWT_SECRET must contain at least 32 bytes (256 bits) for HS256");
         }
+
         this.key = Keys.hmacShaKeyFor(secretBytes);
     }
 

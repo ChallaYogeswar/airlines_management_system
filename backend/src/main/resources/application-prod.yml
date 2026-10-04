@@ -1,25 +1,35 @@
-# Activate with --spring.profiles.active=prod (or SPRING_PROFILES_ACTIVE=prod).
-# All values below are meant to come from the environment - nothing
-# sensitive belongs in this file itself.
+# Production profile. Keep secrets and infrastructure-specific values
+# in Render environment variables; no credentials belong in source control.
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/ams}
-    username: ${DB_USERNAME:ams}
-    password: ${DB_PASSWORD:}
+    url: ${DB_URL:${DATABASE_URL:}}
+    username: ${DB_USERNAME:${DATABASE_USER:}}
+    password: ${DB_PASSWORD:${DATABASE_PASSWORD:}}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:5}
+      minimum-idle: ${DB_MIN_IDLE:1}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:10000}
   jpa:
     hibernate:
-      # "update" is fine for early development; once this has real data,
-      # switch to a migration tool (Flyway/Liquibase) and set this to
-      # "validate" so schema changes are deliberate, not automatic.
+      # Kept as update for compatibility with the current project schema.
+      # Move to validate + Flyway/Liquibase migrations before handling
+      # established production data.
       ddl-auto: update
     open-in-view: false
   h2:
     console:
       enabled: false
 
+server:
+  forward-headers-strategy: framework
+
 ams:
   security:
-    jwt-secret: ${AMS_JWT_SECRET:?AMS_JWT_SECRET must be set in production}
+    # Spring placeholder defaults are intentionally not used for secrets.
+    # JwtService also enforces a minimum 256-bit key.
+    jwt-secret: ${AMS_JWT_SECRET:}
   cors:
-    allowed-origins: ${AMS_ALLOWED_ORIGINS:https://your-production-domain.example}
+    # Safe fallback for the currently deployed frontend; override in Render
+    # with a comma-separated allow-list when a custom domain is introduced.
+    allowed-origins: ${AMS_ALLOWED_ORIGINS:https://frontend-fmraqga9m-cy-dev.vercel.app}
